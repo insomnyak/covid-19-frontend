@@ -1,0 +1,6 @@
+.git
+.gitignore
+worksheet.ipynb
+/__pycache__
+*/__pycache__
+/.vscode

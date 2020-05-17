@@ -57,16 +57,11 @@ dash_app.layout = html.Div([
         )
     ]),
 
-    html.Div([
-        html.Div([
-            dcc.Graph(id = 'graph-byCountry-basic',
-                config = {'displayModeBar': False})
-        ], style= {'display': 'inline-block'}),
-        html.Div([
-            dcc.Graph(id = 'graph-byCountry-pctChange',
-                config = {'displayModeBar': False})
-        ], style= {'display': 'inline-block'}),
-    ]),
+    dcc.Graph(id = 'graph-byCountry-basic',
+        config = {'displayModeBar': False}),
+    
+    dcc.Graph(id = 'graph-byCountry-pctChange',
+        config = {'displayModeBar': False}),
 
     html.Footer([
         dcc.Location(id='url', refresh=False),

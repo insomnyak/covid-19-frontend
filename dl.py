@@ -28,21 +28,12 @@ class Covid19DL():
         return filename
 
     def getAllTargetData(self, printPaths=False):
+        print('Retrieving data from GCS')
         dfDict = dict()
-        for source in sources:
-            if source == 'JHU':
-                filename = 'jhu-target.csv'
-                path = '{0}{1}'.format(self.target, filename)
-                if printPaths: print(path)
-                blobTarget = self.bucket.blob(path)
-                downloadFile = blobTarget.download_as_string()
-                downloadFile = StringIO(str(downloadFile, encoding="utf-8"))
-                if source not in dfDict.keys():
-                    dfDict[source] = dict()
-                dfDict[source]['ProvinceState'] = pd.read_csv(downloadFile, delimiter= ",")
-            else:
-                for key in sources[source]:
-                    filename = self.getFilename(source, sources[source][key], desc=key)
+        try:
+            for source in sources:
+                if source == 'JHU':
+                    filename = 'jhu-target.csv'
                     path = '{0}{1}'.format(self.target, filename)
                     if printPaths: print(path)
                     blobTarget = self.bucket.blob(path)
@@ -50,7 +41,23 @@ class Covid19DL():
                     downloadFile = StringIO(str(downloadFile, encoding="utf-8"))
                     if source not in dfDict.keys():
                         dfDict[source] = dict()
-                    dfDict[source][key] = pd.read_csv(downloadFile, delimiter= ",")
+                    dfDict[source]['ProvinceState'] = pd.read_csv(downloadFile, delimiter= ",")
+                else:
+                    for key in sources[source]:
+                        filename = self.getFilename(source, sources[source][key], desc=key)
+                        path = '{0}{1}'.format(self.target, filename)
+                        if printPaths: print(path)
+                        blobTarget = self.bucket.blob(path)
+                        downloadFile = blobTarget.download_as_string()
+                        downloadFile = StringIO(str(downloadFile, encoding="utf-8"))
+                        if source not in dfDict.keys():
+                            dfDict[source] = dict()
+                        dfDict[source][key] = pd.read_csv(downloadFile, delimiter= ",")
+            print('Retrieved data from GCS')
+            print(dfDict.keys())
+        except Exception as e:
+            print('Failed data retrieval from GCS')
+            print(e)
         return dfDict
 
 # covid19 = Covid19DataRetrieval()

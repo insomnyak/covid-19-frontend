@@ -4,3 +4,5 @@ worksheet.ipynb
 /__pycache__
 */__pycache__
 /.vscode
+/setup.cfg
+__pycache__/

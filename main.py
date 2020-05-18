@@ -14,9 +14,16 @@ import utils.url as url
 
 # css
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_scripts = [
+    {
+        'src': 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
+        'data-ad-client': 'ca-pub-7293143136596608',
+        'async': True
+    }
+]
 
 # app
-dash_app = dash.Dash(external_stylesheets=external_stylesheets)
+dash_app = dash.Dash(external_stylesheets=external_stylesheets, external_scripts=external_scripts)
 app = dash_app.server
 
 # load data
@@ -25,6 +32,8 @@ data = sl.data
 df_jhu, df_nytimes_county, df_covidtracking_country, df_covidtracking_state, df_dxy_region, df_dxy_Country = sl.getIndividualData(data)
 
 metrics = sl.getMetrics()
+
+# <script data-ad-client="ca-pub-7293143136596608" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
 # dash_app layout
 dash_app.layout = html.Div([

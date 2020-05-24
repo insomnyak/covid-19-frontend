@@ -1,6 +1,7 @@
 import pandas as pd 
 import numpy as np 
 import os
+from datetime import timedelta
 
 import dl 
 
@@ -45,12 +46,16 @@ class Covid19SL():
         df_china['Deaths'] = df_dxy_Country.death
         df_china['Recovered'] = df_dxy_Country.recovered
         df_china['CountryRegion'] = 'China'
-        df_china['LastUpdateDatetime'] = df_dxy_Country.date
-        df_china['LastUpdateDate'] = df_dxy_Country.date
+        df_china['LastUpdateDatetime'] = pd.to_datetime(df_dxy_Country.date, unit='ns') - timedelta(days=1)
+        df_china['LastUpdateDate'] = df_china.LastUpdateDatetime
+        df_china = df_china[pd.to_datetime(df_china.LastUpdateDate, unit='ns').dt.strftime("%m/%d/%Y") != "04/23/2020"]
+        df_china.LastUpdateDatetime = df_china.LastUpdateDatetime.astype(str)
+        df_china.LastUpdateDate = df_china.LastUpdateDate.astype(str)
 
         df_world = df_jhu.append(df_china)
 
         df_world['LastUpdateDate'] = pd.to_datetime(df_world['LastUpdateDate'], unit='ns').dt.date
+        df_world = df_world[pd.to_datetime(df_world.LastUpdateDate, unit='ns').dt.strftime("%m/%d/%Y") != "04/23/2020"]
 
         if country:
             df_filtered = df_world[df_world.CountryRegion == country].set_index(['CountryRegion', 'LastUpdateDate'])\
@@ -89,7 +94,7 @@ class Covid19SL():
             )
         }
 
-        df_pctChange = df_filtered[-14::]
+        df_pctChange = df_filtered[-21::]
         chart_pctChange = {
             'data': [dict(
                 x = df_pctChange.LastUpdateDate,

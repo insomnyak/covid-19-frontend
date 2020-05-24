@@ -105,7 +105,7 @@ def byCountryGraph(country, yAxisMetric, yAxisType):
 )
 def refreshData(search):
     val = url.getParam('refresh', search)
-    if str(val) == '1':
+    if str(val) == 'df':
         global data, df_jhu, df_nytimes_county, df_covidtracking_country, df_covidtracking_state, df_dxy_region, df_dxy_Country
 
         data = sl.getData()
@@ -113,6 +113,12 @@ def refreshData(search):
         
         update = 'Data refresh triggered. Updated at %s' % str(datetime.date(datetime.now()))
         return update 
+    elif str(val) == 'target':
+        try:
+            os.system('gcloud functions call covid19-daily-update')
+        except Exception as e:
+            print('Unable to update GCS target files.')
+            print(e)
     else: 
         return ''
 
